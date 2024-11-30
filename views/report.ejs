@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчёты</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Отчёты</h1>
+
+    <!-- Форма для выбора пользователя -->
+    <form action="/reports" method="GET">
+        <label for="user">Выберите пользователя:</label>
+        <select name="userId" id="user">
+            <option value="">Все пользователи</option>
+            <% users.forEach(user => { %>
+                <option value="<%= user._id %>"><%= user.name %></option>
+            <% }); %>
+        </select>
+        <button type="submit">Показать отчет</button>
+    </form>
+
+    <!-- Таблица с отчетами -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Пользователь</th>
+                <th>Email</th>
+                <th>Пропуски</th>
+                <th>Логи</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% data.forEach(item => { %>
+            <tr>
+                <td><%= item.name %></td>
+                <td><%= item.email %></td>
+                <td>
+                    <ul>
+                        <% item.passes.forEach(pass => { %>
+                        <li><%= pass.type %>: <%= pass.startDate.toISOString().split('T')[0] %> - <%= pass.endDate.toISOString().split('T')[0] %></li>
+                        <% }); %>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <% item.logs.forEach(log => { %>
+                        <li><%= log.action %>: <%= log.timestamp.toLocaleString() %></li>
+                        <% }); %>
+                    </ul>
+                </td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+        <!-- Кнопка для экспорта в .docx -->
+        <form action="/reports/export-txt" method="GET">
+            <label for="userIdExport">Экспортировать отчет в формат Word:</label>
+            <select name="userIdExport" id="userIdExport">
+                <option value="">Все пользователи</option>
+                <% users.forEach(user => { %>
+                    <option value="<%= user._id %>"><%= user.name %></option>
+                <% }); %>
+            </select>
+            <button type="submit" class="btn">Экспортировать</button>
+        </form>
+    </div>
+
+    <a href="/" class="btn">На главную</a>
+</body>
+</html>

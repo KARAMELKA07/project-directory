@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Логи</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h2>Фильтровать логи</h2>
+    <form method="GET" action="/logs">
+        <label for="userId">Пользователь:</label>
+        <select name="userId" id="userId">
+            <option value="">Все пользователи</option>
+            <% users.forEach(user => { %>
+                <option value="<%= user._id %>"><%= user.name %></option>
+            <% }); %>
+        </select>
+
+        <label for="action">Действие:</label>
+        <select name="action" id="action">
+            <option value="">Все действия</option>
+            <option value="вход">Вход</option>
+            <option value="выход">Выход</option>
+        </select>
+
+        <label for="startDate">С даты:</label>
+        <input type="date" name="startDate">
+
+        <label for="endDate">По дату:</label>
+        <input type="date" name="endDate">
+
+        <button type="submit">Применить фильтр</button>
+    </form>
+
+    <hr />
+
+    <h2>Добавить лог</h2>
+    <form action="/logs/add" method="POST">
+        <label for="passId">Пропуск:</label>
+        <select name="passId" id="passId" required>
+            <% passes.forEach(pass => { %>
+                <option value="<%= pass._id %>" <% if (new Date(pass.endDate) < new Date()) { %> disabled <% } %>>
+                    Пользователь: <%= pass.userId.name %>, Тип: <%= pass.type %>, Дата начала: <%= pass.startDate.toISOString().split('T')[0] %>, Дата окончания: <%= pass.endDate.toISOString().split('T')[0] %>
+                    <% if (new Date(pass.endDate) < new Date()) { %> (Просрочен) <% } %>
+                </option>
+            <% }); %>
+        </select>
+
+        <label for="action">Действие:</label>
+        <select name="action" id="action" required>
+            <option value="вход">Вход</option>
+            <option value="выход">Выход</option>
+        </select>
+
+        <button type="submit">Добавить</button>
+    </form>
+
+
+    <hr />
+
+    <h2>Список логов</h2>
+    <ul>
+        <% logs.forEach(log => { %>
+            <li>
+                Пользователь: <%= log.userId.name %>, Пропуск: <%= log.passId.type %>, Действие: <%= log.action %>, Время: <%= log.timestamp.toLocaleString() %>
+            </li>
+        <% }); %>
+    </ul>
+
+    <hr />
+
+    <a href="/">На главную</a>
+</body>
+</html>

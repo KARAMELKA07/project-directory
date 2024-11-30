@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пользователи</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Управление пользователями</h1>
+    <form action="/users" method="POST">
+        <input type="text" name="name" placeholder="Имя" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <button type="submit">Добавить пользователя</button>
+    </form>
+
+    <ul>
+        <% users.forEach(user => { %>
+        <li>
+            <form action="/users/edit/<%= user._id %>" method="POST">
+                <input type="text" name="name" value="<%= user.name %>" required>
+                <input type="email" name="email" value="<%= user.email %>" required>
+                <button type="submit">Сохранить</button>
+            </form>
+            <form action="/users/delete/<%= user._id %>" method="POST">
+                <button type="submit" onclick="return confirm('Удалить пользователя?')">Удалить</button>
+            </form>
+        </li>
+        <% }); %>
+    </ul>
+
+    <a href="/">На главную</a>
+</body>
+</html>

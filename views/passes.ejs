@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление пропусками</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Управление пропусками</h1>
+
+    <!-- Вывод ошибки, если она была -->
+    <% if (errorMessage) { %>
+        <p style="color: red;"><%= errorMessage %></p>
+    <% } %>
+
+    <!-- Форма для добавления пропуска -->
+    <form action="/passes" method="POST">
+        <select name="userId" required>
+            <% users.forEach(user => { %>
+            <option value="<%= user._id %>"><%= user.name %></option>
+            <% }); %>
+        </select>
+        <input type="text" name="type" placeholder="Тип пропуска" required>
+        <input type="date" name="startDate" required>
+        <input type="date" name="endDate" required>
+        <button type="submit">Добавить пропуск</button>
+    </form>
+
+    <!-- Список пропусков -->
+    <ul>
+        <% passes.forEach(pass => { %>
+        <li>
+            <% if (pass.userId) { %>
+                Пользователь: <%= pass.userId.name %>, Тип: <%= pass.type %>, 
+                Дата начала: <%= pass.startDate.toISOString().split('T')[0] %>, 
+                Дата окончания: <%= pass.endDate.toISOString().split('T')[0] %>
+            <% } else { %>
+                <span style="color: red;">Пользователь не найден</span>
+            <% } %>
+            <form action="/passes/edit/<%= pass._id %>" method="POST">
+                <input type="text" name="type" value="<%= pass.type %>" required>
+                <input type="date" name="startDate" value="<%= pass.startDate.toISOString().split('T')[0] %>" required>
+                <input type="date" name="endDate" value="<%= pass.endDate.toISOString().split('T')[0] %>" required>
+                <button type="submit">Сохранить</button>
+            </form>
+            <form action="/passes/delete/<%= pass._id %>" method="POST">
+                <button type="submit" onclick="return confirm('Удалить пропуск?')">Удалить</button>
+            </form>
+        </li>
+        <% }); %>
+    </ul>
+
+    <a href="/">На главную</a>
+</body>
+</html>
